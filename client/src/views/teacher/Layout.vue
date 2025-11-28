@@ -128,12 +128,50 @@ const handleLogout = () => {
 }
 
 @media (max-width: 768px) {
+  .layout-container {
+    flex-direction: column;
+  }
+
   .sidebar {
-    width: 64px !important;
+    width: 100% !important;
+    height: auto;
+  }
+
+  .logo {
+    height: 50px;
+    padding: 0 10px;
+  }
+
+  .logo-img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .el-menu {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  :deep(.el-menu-item) {
+    flex-shrink: 0;
   }
   
   .el-main {
     padding: 10px;
+  }
+
+  .header {
+    padding: 0 10px;
+  }
+
+  .header-right {
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .header-right span {
+    display: none;
   }
 }
 </style>

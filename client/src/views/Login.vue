@@ -572,18 +572,58 @@ const handleLogin = async () => {
 @media (max-width: 768px) {
   .container {
     padding: 20px;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  /* 手机版隐藏左侧展示区域 */
+  .left-section {
+    display: none;
+  }
+  
+  .right-section {
+    flex: 1;
+    max-width: 100%;
   }
   
   .login-card {
-    padding: 30px;
+    padding: 30px 20px;
   }
   
-  .system-title {
-    font-size: 36px;
+  /* 在登录卡片顶部显示简化的标题 */
+  .login-card::before {
+    content: '竞赛训练日志管理系统';
+    display: block;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 30px;
+    padding-top: 10px;
+  }
+  
+  .login-header h2 {
+    font-size: 20px;
+  }
+  
+  .login-header p {
+    font-size: 13px;
   }
   
   .role-selector {
     flex-direction: column;
+  }
+  
+  .form-group label {
+    font-size: 13px;
+  }
+  
+  .input-wrapper input {
+    padding: 14px 20px 14px 50px;
+    font-size: 14px;
   }
 }
 </style>

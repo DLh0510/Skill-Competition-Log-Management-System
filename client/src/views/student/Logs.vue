@@ -145,10 +145,40 @@ onMounted(fetchLogs)
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .content-text {
   white-space: pre-wrap;
   line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-actions h3 {
+    font-size: 18px;
+  }
+
+  :deep(.el-table) {
+    font-size: 12px;
+  }
+
+  :deep(.el-table .el-button) {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+
+  :deep(.el-dropdown) {
+    display: block;
+  }
+
+  :deep(.el-table__body-wrapper) {
+    overflow-x: auto;
+  }
 }
 </style>
