@@ -23,23 +23,25 @@
             <span v-else style="color: #999">未评价</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="240">
+        <el-table-column label="操作" width="260">
           <template #default="{ row }">
-            <el-button size="small" @click="handleView(row)">查看</el-button>
-            <el-button size="small" type="primary" @click="handleEvaluate(row)">评价</el-button>
-            <el-dropdown size="small" style="margin-left: 10px">
-              <el-button size="small" type="success">
-                导出<el-icon class="el-icon--right"><ArrowDown /></el-icon>
-              </el-button>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="handleExport(row, 'pdf')">导出PDF</el-dropdown-item>
-                  <el-dropdown-item @click="handleExport(row, 'word')">导出Word</el-dropdown-item>
-                  <el-dropdown-item @click="handleExport(row, 'md')">导出Markdown</el-dropdown-item>
-                  <el-dropdown-item @click="handleExport(row, 'image')">导出图片</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <el-button size="small" @click="handleView(row)">查看</el-button>
+              <el-button size="small" type="primary" @click="handleEvaluate(row)">评价</el-button>
+              <el-dropdown size="small">
+                <el-button size="small" type="success">
+                  导出<el-icon class="el-icon--right"><ArrowDown /></el-icon>
+                </el-button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item @click="handleExport(row, 'pdf')">导出PDF</el-dropdown-item>
+                    <el-dropdown-item @click="handleExport(row, 'word')">导出Word</el-dropdown-item>
+                    <el-dropdown-item @click="handleExport(row, 'md')">导出Markdown</el-dropdown-item>
+                    <el-dropdown-item @click="handleExport(row, 'image')">导出图片</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </div>
           </template>
         </el-table-column>
       </el-table>

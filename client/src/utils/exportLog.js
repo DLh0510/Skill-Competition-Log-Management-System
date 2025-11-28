@@ -34,7 +34,7 @@ export const exportToImage = async (log) => {
   }
 }
 
-// 导出为PDF（支持多页）
+// 导出为PDF（支持多页，带页边距和页间距）
 export const exportToPDF = async (log) => {
   const content = createLogHTML(log)
   const container = document.createElement('div')
@@ -43,7 +43,7 @@ export const exportToPDF = async (log) => {
     position: fixed;
     left: -9999px;
     top: 0;
-    width: 800px;
+    width: 750px;
     padding: 40px;
     background: white;
     font-family: 'Microsoft YaHei', Arial, sans-serif;
@@ -67,22 +67,47 @@ export const exportToPDF = async (log) => {
     
     const pageWidth = 210 // A4宽度（mm）
     const pageHeight = 297 // A4高度（mm）
-    const imgWidth = pageWidth
-    const imgHeight = (canvas.height * pageWidth) / canvas.width
+    const topMargin = 15 // 顶部页边距（mm）
+    const bottomMargin = 15 // 底部页边距（mm）
+    const sideMargin = 15 // 左右页边距（mm）
+    const pageGap = 20 // 第二页及之后页面顶部额外间距（mm）
+    
+    const contentWidth = pageWidth - 2 * sideMargin
+    const firstPageHeight = pageHeight - topMargin - bottomMargin // 第一页可用高度
+    const otherPageHeight = pageHeight - topMargin - bottomMargin - pageGap // 其他页可用高度
+    
+    const imgWidth = contentWidth
+    const imgHeight = (canvas.height * contentWidth) / canvas.width
     
     let heightLeft = imgHeight
-    let position = 0
+    let pageCount = 0
     
-    // 添加第一页
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
-    heightLeft -= pageHeight
-    
-    // 如果内容超过一页，添加更多页
+    // 循环添加页面
     while (heightLeft > 0) {
-      position = heightLeft - imgHeight
-      pdf.addPage()
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
-      heightLeft -= pageHeight
+      if (pageCount > 0) {
+        pdf.addPage()
+      }
+      
+      // 计算当前页的位置偏移
+      let yOffset
+      if (pageCount === 0) {
+        // 第一页
+        yOffset = topMargin
+      } else {
+        // 第二页及之后，增加额外间距
+        yOffset = topMargin + pageGap - (firstPageHeight + (pageCount - 1) * otherPageHeight)
+      }
+      
+      pdf.addImage(imgData, 'PNG', sideMargin, yOffset, imgWidth, imgHeight)
+      
+      // 更新剩余高度
+      if (pageCount === 0) {
+        heightLeft -= firstPageHeight
+      } else {
+        heightLeft -= otherPageHeight
+      }
+      
+      pageCount++
     }
     
     pdf.save(`训练日志-${log.student_name}-${log.training_date}.pdf`)

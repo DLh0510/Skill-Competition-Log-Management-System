@@ -29,10 +29,25 @@
             <span v-else style="color: #999">未评价</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="150">
+        <el-table-column label="操作" width="260">
           <template #default="{ row }">
-            <el-button size="small" @click="handleView(row)">查看</el-button>
-            <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <el-button size="small" @click="handleView(row)">查看</el-button>
+              <el-dropdown size="small">
+                <el-button size="small" type="success">
+                  导出<el-icon class="el-icon--right"><ArrowDown /></el-icon>
+                </el-button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item @click="handleExport(row, 'pdf')">导出PDF</el-dropdown-item>
+                    <el-dropdown-item @click="handleExport(row, 'word')">导出Word</el-dropdown-item>
+                    <el-dropdown-item @click="handleExport(row, 'md')">导出Markdown</el-dropdown-item>
+                    <el-dropdown-item @click="handleExport(row, 'image')">导出图片</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+              <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -78,7 +93,9 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { ArrowDown } from '@element-plus/icons-vue'
 import request from '../../utils/request'
+import { exportToPDF, exportToWord, exportToMarkdown, exportToImage } from '../../utils/exportLog'
 
 const logs = ref([])
 const projects = ref([])
@@ -132,6 +149,32 @@ const formatDateTime = (dateTime) => {
 const handleView = (row) => {
   currentLog.value = row
   viewVisible.value = true
+}
+
+const handleExport = async (row, format) => {
+  try {
+    ElMessage.info('正在生成文件，请稍候...')
+    
+    switch (format) {
+      case 'pdf':
+        await exportToPDF(row)
+        break
+      case 'word':
+        await exportToWord(row)
+        break
+      case 'md':
+        exportToMarkdown(row)
+        break
+      case 'image':
+        await exportToImage(row)
+        break
+    }
+    
+    ElMessage.success('导出成功！')
+  } catch (error) {
+    console.error('导出失败:', error)
+    ElMessage.error('导出失败，请重试')
+  }
 }
 
 const handleDelete = async (row) => {
