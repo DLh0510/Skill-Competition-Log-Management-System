@@ -4,7 +4,13 @@
       <h3>{{ form.id ? '编辑训练日志' : '提交训练日志' }}</h3>
       <el-form :model="form" label-width="100px" style="margin-top: 20px; max-width: 800px">
         <el-form-item label="训练日期">
-          <el-date-picker v-model="form.training_date" type="date" style="width: 100%" />
+          <el-date-picker 
+            v-model="form.training_date" 
+            type="date" 
+            style="width: 100%" 
+            :disabled-date="disabledDate"
+            placeholder="只能选择今天"
+          />
         </el-form-item>
         <el-form-item label="当日教练">
           <el-input v-model="form.coach_name" />
@@ -59,6 +65,15 @@ const form = ref({
   summary: '',
   self_rating: '良'
 })
+
+// 禁用非当天日期
+const disabledDate = (time) => {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const selectedDate = new Date(time)
+  selectedDate.setHours(0, 0, 0, 0)
+  return selectedDate.getTime() !== today.getTime()
+}
 
 const handleSubmit = async () => {
   const data = { ...form.value }

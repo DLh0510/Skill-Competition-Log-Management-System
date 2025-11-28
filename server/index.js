@@ -16,6 +16,8 @@ app.use('/api/logs', require('./routes/logs'));
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`服务器运行在端口 ${PORT}`);
+  console.log(`本地访问: http://localhost:${PORT}`);
+  console.log(`局域网访问: http://[你的IP地址]:${PORT}`);
 });

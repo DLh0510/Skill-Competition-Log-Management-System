@@ -1,7 +1,10 @@
 <template>
   <el-container class="layout-container">
     <el-aside :width="isCollapse ? '64px' : '200px'" class="sidebar">
-      <div class="logo">{{ isCollapse ? '日志' : '管理后台' }}</div>
+      <div class="logo">
+        <img src="@/assets/images/logo.png" alt="Logo" class="logo-img" />
+        <span v-if="!isCollapse" class="logo-text">管理后台</span>
+      </div>
       <el-menu :default-active="$route.path" router :collapse="isCollapse">
         <el-menu-item index="/admin/projects">
           <el-icon><Document /></el-icon>
@@ -66,12 +69,27 @@ const handleLogout = () => {
 
 .logo {
   height: 60px;
-  line-height: 60px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 15px;
   color: #fff;
   font-size: 18px;
   font-weight: bold;
   background: #1a252f;
+}
+
+.logo-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+.logo-text {
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .el-menu {
