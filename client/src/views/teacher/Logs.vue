@@ -213,8 +213,14 @@ onMounted(() => {
     width: 100% !important;
   }
 
+  :deep(.el-card__body) {
+    padding: 10px;
+    overflow-x: auto;
+  }
+
   :deep(.el-table) {
     font-size: 12px;
+    min-width: 900px;
   }
 
   :deep(.el-table .el-button) {
@@ -223,11 +229,16 @@ onMounted(() => {
   }
 
   :deep(.el-dropdown) {
-    display: block;
+    display: inline-block;
   }
 
   :deep(.el-table__body-wrapper) {
-    overflow-x: auto;
+    overflow-x: visible;
+  }
+
+  :deep(.el-table td),
+  :deep(.el-table th) {
+    padding: 8px 5px;
   }
 
   :deep(.el-dialog) {
