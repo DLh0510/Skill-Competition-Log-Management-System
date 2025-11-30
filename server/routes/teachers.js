@@ -66,4 +66,45 @@ router.delete('/:id', auth(['admin']), async (req, res) => {
   }
 });
 
+// 批量导入教师
+router.post('/batch', auth(['admin']), async (req, res) => {
+  try {
+    const { teachers } = req.body;
+    if (!teachers || !Array.isArray(teachers) || teachers.length === 0) {
+      return res.status(400).json({ message: '没有有效的导入数据' });
+    }
+
+    // 获取所有项目用于匹配
+    const [projects] = await pool.query('SELECT id, name FROM projects');
+    const projectMap = {};
+    projects.forEach(p => { projectMap[p.name] = p.id; });
+
+    let successCount = 0;
+    let failedItems = [];
+
+    for (const teacher of teachers) {
+      try {
+        const projectId = projectMap[teacher.project_name] || null;
+        const hashedPassword = await bcrypt.hash(teacher.password || '123456', 10);
+        await pool.query(
+          'INSERT INTO teachers (username, password, name, project_id) VALUES (?, ?, ?, ?)',
+          [teacher.username, hashedPassword, teacher.name, projectId]
+        );
+        successCount++;
+      } catch (err) {
+        failedItems.push({ username: teacher.username, reason: err.code === 'ER_DUP_ENTRY' ? '用户名已存在' : err.message });
+      }
+    }
+
+    res.json({ 
+      message: `成功导入 ${successCount} 条，失败 ${failedItems.length} 条`,
+      successCount,
+      failedCount: failedItems.length,
+      failedItems
+    });
+  } catch (error) {
+    res.status(500).json({ message: '服务器错误', error: error.message });
+  }
+});
+
 module.exports = router;

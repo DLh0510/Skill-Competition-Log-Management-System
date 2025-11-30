@@ -51,4 +51,38 @@ router.delete('/:id', auth(['admin']), async (req, res) => {
   }
 });
 
+// 批量导入项目
+router.post('/batch', auth(['admin']), async (req, res) => {
+  try {
+    const { projects } = req.body;
+    if (!projects || !Array.isArray(projects) || projects.length === 0) {
+      return res.status(400).json({ message: '没有有效的导入数据' });
+    }
+
+    let successCount = 0;
+    let failedItems = [];
+
+    for (const project of projects) {
+      try {
+        await pool.query(
+          'INSERT INTO projects (name, description) VALUES (?, ?)',
+          [project.name, project.description || '']
+        );
+        successCount++;
+      } catch (err) {
+        failedItems.push({ name: project.name, reason: err.code === 'ER_DUP_ENTRY' ? '项目名称已存在' : err.message });
+      }
+    }
+
+    res.json({ 
+      message: `成功导入 ${successCount} 条，失败 ${failedItems.length} 条`,
+      successCount,
+      failedCount: failedItems.length,
+      failedItems
+    });
+  } catch (error) {
+    res.status(500).json({ message: '服务器错误', error: error.message });
+  }
+});
+
 module.exports = router;
