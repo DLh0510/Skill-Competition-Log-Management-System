@@ -7,7 +7,9 @@
       </div>
 
       <el-table :data="logs" style="width: 100%; margin-top: 20px">
-        <el-table-column prop="training_date" label="训练日期" width="120" />
+        <el-table-column prop="training_date" label="训练日期" width="120">
+          <template #default="{ row }">{{ formatDate(row.training_date) }}</template>
+        </el-table-column>
         <el-table-column prop="training_topic" label="训练课题" />
         <el-table-column prop="self_rating" label="自评" width="80">
           <template #default="{ row }">
@@ -47,7 +49,7 @@
     <el-dialog v-model="viewVisible" title="训练日志详情" width="90%" :fullscreen="isMobile">
       <div class="log-detail" v-if="currentLog">
         <el-descriptions :column="isMobile ? 1 : 2" border>
-          <el-descriptions-item label="训练日期">{{ currentLog.training_date }}</el-descriptions-item>
+          <el-descriptions-item label="训练日期">{{ formatDate(currentLog.training_date) }}</el-descriptions-item>
           <el-descriptions-item label="当日教练">{{ currentLog.coach_name }}</el-descriptions-item>
           <el-descriptions-item label="训练课题" :span="2">{{ currentLog.training_topic }}</el-descriptions-item>
           <el-descriptions-item label="训练内容" :span="2">
@@ -97,6 +99,21 @@ const fetchLogs = async () => {
 const getRatingType = (rating) => {
   const map = { '优': 'success', '良': 'primary', '一般': 'warning', '差': 'danger' }
   return map[rating] || 'info'
+}
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return ''
+  if (dateStr.includes('T')) {
+    const date = new Date(dateStr)
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    const seconds = String(date.getSeconds()).padStart(2, '0')
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+  }
+  return dateStr
 }
 
 const handleView = (row) => {

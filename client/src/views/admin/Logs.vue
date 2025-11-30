@@ -14,7 +14,9 @@
       </div>
 
       <el-table :data="logs" style="width: 100%; margin-top: 20px">
-        <el-table-column prop="training_date" label="训练日期" width="120" />
+        <el-table-column prop="training_date" label="训练日期" width="120">
+          <template #default="{ row }">{{ formatDate(row.training_date) }}</template>
+        </el-table-column>
         <el-table-column prop="student_name" label="学生" width="100" />
         <el-table-column prop="project_name" label="项目" width="120" />
         <el-table-column prop="training_topic" label="训练课题" show-overflow-tooltip />
@@ -56,7 +58,7 @@
     <el-dialog v-model="viewVisible" title="训练日志详情" width="90%" :fullscreen="isMobile">
       <div class="log-detail" v-if="currentLog">
         <el-descriptions :column="isMobile ? 1 : 2" border>
-          <el-descriptions-item label="训练日期">{{ currentLog.training_date }}</el-descriptions-item>
+          <el-descriptions-item label="训练日期">{{ formatDate(currentLog.training_date) }}</el-descriptions-item>
           <el-descriptions-item label="学生">{{ currentLog.student_name }}</el-descriptions-item>
           <el-descriptions-item label="项目">{{ currentLog.project_name }}</el-descriptions-item>
           <el-descriptions-item label="当日教练">{{ currentLog.coach_name }}</el-descriptions-item>
@@ -142,6 +144,21 @@ const getRatingType = (rating) => {
 const formatDateTime = (dateTime) => {
   if (!dateTime) return ''
   return new Date(dateTime).toLocaleString('zh-CN')
+}
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return ''
+  if (dateStr.includes('T')) {
+    const date = new Date(dateStr)
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    const seconds = String(date.getSeconds()).padStart(2, '0')
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+  }
+  return dateStr
 }
 
 const handleView = (row) => {
