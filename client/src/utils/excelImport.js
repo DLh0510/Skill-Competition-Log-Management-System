@@ -9,13 +9,13 @@ export const downloadTemplate = (type) => {
 
   switch (type) {
     case 'students':
-      headers = ['用户名', '密码', '姓名', '项目名称']
-      sampleData = [['student001', '123456', '张三', 'Web前端开发']]
+      headers = ['用户名', '密码', '姓名', '手机号', '项目名称']
+      sampleData = [['student001', '123456', '张三', '13800138000', 'Web前端开发']]
       fileName = '学生导入模板.xlsx'
       break
     case 'teachers':
-      headers = ['用户名', '密码', '姓名', '项目名称']
-      sampleData = [['teacher001', '123456', '李老师', 'Web前端开发']]
+      headers = ['用户名', '密码', '姓名', '手机号', '项目名称']
+      sampleData = [['teacher001', '123456', '李老师', '13900139000', 'Web前端开发']]
       fileName = '教师导入模板.xlsx'
       break
     case 'projects':
@@ -58,7 +58,8 @@ export const parseExcel = (file, type) => {
               username: String(row[0] || '').trim(),
               password: String(row[1] || '').trim(),
               name: String(row[2] || '').trim(),
-              project_name: String(row[3] || '').trim()
+              phone: String(row[3] || '').trim(),
+              project_name: String(row[4] || '').trim()
             })).filter(item => item.username && item.name)
             break
           case 'teachers':
@@ -66,7 +67,8 @@ export const parseExcel = (file, type) => {
               username: String(row[0] || '').trim(),
               password: String(row[1] || '').trim(),
               name: String(row[2] || '').trim(),
-              project_name: String(row[3] || '').trim()
+              phone: String(row[3] || '').trim(),
+              project_name: String(row[4] || '').trim()
             })).filter(item => item.username && item.name)
             break
           case 'projects':

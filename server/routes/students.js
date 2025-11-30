@@ -29,13 +29,13 @@ router.get('/', auth(['admin', 'teacher']), async (req, res) => {
 // 创建学生
 router.post('/', auth(['admin']), async (req, res) => {
   try {
-    const { username, password, name, project_id } = req.body;
+    const { username, password, name, phone, project_id } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const [result] = await pool.query(
-      'INSERT INTO students (username, password, name, project_id) VALUES (?, ?, ?, ?)',
-      [username, hashedPassword, name, project_id]
+      'INSERT INTO students (username, password, name, phone, project_id) VALUES (?, ?, ?, ?, ?)',
+      [username, hashedPassword, name, phone || null, project_id]
     );
-    res.json({ id: result.insertId, username, name, project_id });
+    res.json({ id: result.insertId, username, name, phone, project_id });
   } catch (error) {
     res.status(500).json({ message: '服务器错误', error: error.message });
   }
@@ -44,17 +44,17 @@ router.post('/', auth(['admin']), async (req, res) => {
 // 更新学生
 router.put('/:id', auth(['admin']), async (req, res) => {
   try {
-    const { name, project_id, password } = req.body;
+    const { name, phone, project_id, password } = req.body;
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
       await pool.query(
-        'UPDATE students SET name = ?, project_id = ?, password = ? WHERE id = ?',
-        [name, project_id, hashedPassword, req.params.id]
+        'UPDATE students SET name = ?, phone = ?, project_id = ?, password = ? WHERE id = ?',
+        [name, phone || null, project_id, hashedPassword, req.params.id]
       );
     } else {
       await pool.query(
-        'UPDATE students SET name = ?, project_id = ? WHERE id = ?',
-        [name, project_id, req.params.id]
+        'UPDATE students SET name = ?, phone = ?, project_id = ? WHERE id = ?',
+        [name, phone || null, project_id, req.params.id]
       );
     }
     res.json({ message: '更新成功' });
@@ -94,8 +94,8 @@ router.post('/batch', auth(['admin']), async (req, res) => {
         const projectId = projectMap[student.project_name] || null;
         const hashedPassword = await bcrypt.hash(student.password || '123456', 10);
         await pool.query(
-          'INSERT INTO students (username, password, name, project_id) VALUES (?, ?, ?, ?)',
-          [student.username, hashedPassword, student.name, projectId]
+          'INSERT INTO students (username, password, name, phone, project_id) VALUES (?, ?, ?, ?, ?)',
+          [student.username, hashedPassword, student.name, student.phone || null, projectId]
         );
         successCount++;
       } catch (err) {

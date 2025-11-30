@@ -8,9 +8,15 @@ async function initDatabase() {
         id INT PRIMARY KEY AUTO_INCREMENT,
         username VARCHAR(50) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
+        phone VARCHAR(20),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
+    
+    // 为已存在的表添加 phone 字段（如果不存在）
+    try {
+      await pool.query('ALTER TABLE admins ADD COLUMN phone VARCHAR(20)');
+    } catch (e) { /* 字段可能已存在 */ }
 
     // 项目表
     await pool.query(`
@@ -29,11 +35,17 @@ async function initDatabase() {
         username VARCHAR(50) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
         name VARCHAR(50) NOT NULL,
+        phone VARCHAR(20),
         project_id INT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL
       )
     `);
+    
+    // 为已存在的表添加 phone 字段（如果不存在）
+    try {
+      await pool.query('ALTER TABLE teachers ADD COLUMN phone VARCHAR(20)');
+    } catch (e) { /* 字段可能已存在 */ }
 
     // 学生表
     await pool.query(`
@@ -42,11 +54,17 @@ async function initDatabase() {
         username VARCHAR(50) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
         name VARCHAR(50) NOT NULL,
+        phone VARCHAR(20),
         project_id INT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL
       )
     `);
+    
+    // 为已存在的表添加 phone 字段（如果不存在）
+    try {
+      await pool.query('ALTER TABLE students ADD COLUMN phone VARCHAR(20)');
+    } catch (e) { /* 字段可能已存在 */ }
 
     // 训练日志表
     await pool.query(`

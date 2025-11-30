@@ -13,6 +13,7 @@
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column prop="username" label="用户名" />
         <el-table-column prop="name" label="姓名" />
+        <el-table-column prop="phone" label="手机号" width="130" />
         <el-table-column prop="project_name" label="关联项目" />
         <el-table-column label="操作" width="180">
           <template #default="{ row }">
@@ -33,6 +34,9 @@
         </el-form-item>
         <el-form-item label="姓名">
           <el-input v-model="form.name" />
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input v-model="form.phone" placeholder="用于微信小程序登录" />
         </el-form-item>
         <el-form-item label="关联项目">
           <el-select v-model="form.project_id" style="width: 100%">
@@ -66,6 +70,7 @@
         <el-table :data="importPreview.slice(0, 5)" size="small" max-height="200">
           <el-table-column prop="username" label="用户名" />
           <el-table-column prop="name" label="姓名" />
+          <el-table-column prop="phone" label="手机号" />
           <el-table-column prop="project_name" label="项目" />
         </el-table>
         <p v-if="importPreview.length > 5" style="color: #999; font-size: 12px;">... 还有 {{ importPreview.length - 5 }} 条数据</p>
@@ -91,7 +96,7 @@ const dialogVisible = ref(false)
 const importVisible = ref(false)
 const importPreview = ref([])
 const uploadRef = ref(null)
-const form = ref({ username: '', password: '', name: '', project_id: null })
+const form = ref({ username: '', password: '', name: '', phone: '', project_id: null })
 
 const fetchData = async () => {
   teachers.value = await request.get('/teachers')
@@ -99,7 +104,7 @@ const fetchData = async () => {
 }
 
 const handleAdd = () => {
-  form.value = { username: '', password: '', name: '', project_id: null }
+  form.value = { username: '', password: '', name: '', phone: '', project_id: null }
   dialogVisible.value = true
 }
 
